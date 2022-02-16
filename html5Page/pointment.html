@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎使用睿蚁预约系统</title>
+</head>
+<body>
+    <form id="contact-form" class="contact-form">
+        预约人姓名：<input id="name" type="text" name="name"/><br>
+        预约开始时间：<input id="starttime" type="datetime-local" name="starttime"/><br>
+        预约结束时间：<input id="endtime" type="datetime-local" name="endtime"/><br>
+        <input id="submit" type="button" value="预约会议室" />
+    </form>
+</body>
+<script src="../js/axios.min.js"></script>
+<script src="../js/vue@2.js"></script>
+</html>
+<script>
+    const startPoint = function(){
+        const sss = document.getElementById("name")
+        const sss1 = document.getElementById("starttime")
+        const sss2 = document.getElementById("endtime")
+        if (sss.value != '' && sss1.value != '' && sss2.value != '') {
+            axios.get(`http://192.168.1.199:22009/ros/lockStitch_DoorOperate?deviceId=C554D90E8B5110F3&subcmd=0&stime=2022-01-17%2015%3A43%3A01&etime=2022-01-20%2015%3A43%3A01&valuelist=0`).then(res => {
+                console.log("调用成功！")
+            }).catch(err => {
+                console.log(err)
+            }).finally(() => {
+                alert("预约会议成功了！！！！")
+                document.getElementById("name").value = '';
+                document.getElementById("starttime").value = '';
+                document.getElementById("endtime").value = '';
+            })
+
+        }
+        if (sss.value == '' || sss1.value == '' || sss2.value == '') { alert("请完善表单信息！")}
+    }
+    const el = document.getElementById('name')
+    console.log(el)
+    const btn = document.getElementById('submit')
+    btn.onclick = startPoint
+</script>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>欢迎使用睿蚁预约系统</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <link rel="stylesheet" href="./css/spop.min.css">
+  <style>
+    .form-item {
+      display: flex;
+      padding: 10px;
+      margin-bottom: 15px;
+      align-items: center;
+    }
+
+    .form-item-labe {
+      margin-right: 10px;
+      width: 80px;
+      color: #676767;
+    }
+
+    .form-item-input {
+      flex: 3;
+    }
+
+    .form-input {
+      border: 1px solid transparent;
+      border-bottom: 1px solid #ccc;
+      width: 100%;
+      height: 30px;
+    }
+
+    .submit-btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: white;
+      background-color: #409EFF;
+      padding: 15px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .spop--top-center {
+      top: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="form">
+    <div class="form-item">
+      <div class="form-item-labe">来访时间</div>
+      <div class="form-item-input"><input class="form-input" id="date" type="datetime-local" value=""
+          placeholder="请选择日期" /></div>
+    </div>
+    <div class="form-item">
+      <div class="form-item-labe">被访公司</div>
+      <div class="form-item-input"><input class="form-input" id="company" maxlength="20" type="text" value=""
+          placeholder="请填写公司" /></div>
+    </div>
+    <div class="form-item">
+      <div class="form-item-labe">被访部门</div>
+      <div class="form-item-input"><input class="form-input" id="department" maxlength="20" type="text" value=""
+          placeholder="请填写部门" /></div>
+    </div>
+    <div class="form-item">
+      <div class="form-item-labe">被访人</div>
+      <div class="form-item-input"><input class="form-input" id="people" maxlength="20" type="text" value=""
+          placeholder="请填写被访人" /></div>
+    </div>
+    <div class="form-item">
+      <div class="form-item-labe">手机号码</div>
+      <div class="form-item-input"><input class="form-input" id="phone" maxlength="20" type="text" value=""
+          placeholder="请填写手机号码" /></div>
+    </div>
+
+    <div class="submit-btn" id="submitBtn">
+      提交预约
+    </div>
+  </div>
+</body>
+<script src="./js/axios.min.js"></script>
+<script src="./js/vue@2.js"></script>
+<script src="./js/spop.min.js"></script>
+
+</html>
+<script>
+  const date = document.getElementById("date")
+  const company = document.getElementById("company")
+  const department = document.getElementById("department")
+  const people = document.getElementById("people")
+  const phone = document.getElementById("phone")
+  const submitBtn = document.getElementById("submitBtn")
+
+  const startPoint = function () {
+    const spopEl2 = document.getElementById('spop--top-center')
+    if (spopEl2) {
+      spopEl2.style.display = 'block'
+    }
+    if (date.value != '' && company.value != '' && department.value != '' && people.value != '' && phone.value != '') {
+      axios.get(`http://192.168.1.199:22009/ros/lockStitch_DoorOperate?deviceId=C554D90E8B5110F3&subcmd=0&stime=2022-01-17%2015%3A43%3A01&etime=2022-01-20%2015%3A43%3A01&valuelist=0`).then(res => {
+        console.log("调用成功！")
+      }).catch(err => {
+        console.log(err)
+      }).finally(() => {
+        spopFn('success', '预约会议成功了！')
+        date.value = ''
+        company.value = ''
+        department.value = ''
+        people.value = ''
+        phone.value = ''
+        submitBtn.value = ''
+      })
+    } else {
+      spopFn('warning', '请完善表单信息！')
+    }
+  }
+
+  const spopFn = function (type, msg) {
+    spop({
+      template: msg,
+      position: 'top-center',
+      style: type,
+      onClose: (res => {
+        const spopEl = document.getElementById('spop--top-center')
+        spopEl.style.display = 'none'
+        console.log(spopEl);
+      }),
+      autoclose: 1300,
+    });
+  }
+  submitBtn.onclick = startPoint
+</script>
